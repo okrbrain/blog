@@ -1,21 +1,57 @@
 ---
+import { getCollection } from 'astro:content';
 import BlogLayout from '../../components/blog/BlogLayout.astro';
 import CategoryHero from '../../components/blog/CategoryHero.astro';
 import CTAInline from '../../components/blog/CTAInline.astro';
 import PostCard from '../../components/blog/PostCard.astro';
-import { getCategoryBySlug, getPostsByCategory, primaryCategories } from '../../components/blog/mockData';
+
+const categoryInfo: Record<string, { name: string; description: string; seoIntro: string }> = {
+	'exemplos-de-okrs': {
+		name: 'Exemplos de OKRs',
+		description: 'Modelos prontos para diferentes contextos de negocio.',
+		seoIntro:
+			'Veja exemplos de OKRs para produto, vendas, marketing e operacoes com estrutura clara para adaptacao rapida.',
+	},
+	'dores-e-dificuldades': {
+		name: 'Dores e dificuldades',
+		description: 'Principais gargalos ao implementar OKRs.',
+		seoIntro:
+			'Entenda as dores mais comuns na gestao por objetivos e como destravar foco, alinhamento e execucao.',
+	},
+	'beneficios-de-okr': {
+		name: 'Beneficios de OKR',
+		description: 'Impacto real de OKRs na performance dos times.',
+		seoIntro:
+			'Descubra os beneficios praticos de usar OKRs para melhorar priorizacao, transparencia e resultados.',
+	},
+	'estudos-de-caso': {
+		name: 'Estudos de caso',
+		description: 'Licoes aplicadas por equipes orientadas a metas.',
+		seoIntro:
+			'Acesse estudos de caso de empresas que usam OKRs para ganhar previsibilidade e acelerar crescimento.',
+	},
+	'comparacao-de-ferramentas': {
+		name: 'Comparacao de ferramentas',
+		description: 'Analises para escolher a ferramenta certa.',
+		seoIntro:
+			'Compare ferramentas de OKR e entenda criterios de escolha para escalar sua operacao com eficiencia.',
+	},
+};
 
 export async function getStaticPaths() {
-	return primaryCategories.map((category) => ({
-		params: { slug: category.slug },
-	}));
+	const posts = await getCollection('blog', ({ data }) => (import.meta.env.PROD ? data.draft !== true : true));
+	const categorySlugs = [...new Set(posts.map((post) => post.data.categorySlug))];
+	return categorySlugs.map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
-const category = getCategoryBySlug(slug ?? '');
-const posts = getPostsByCategory(slug ?? '');
+const allPosts = (
+	await getCollection('blog', ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = allPosts.filter((post) => post.data.categorySlug === slug);
+const category = slug ? categoryInfo[slug] : undefined;
 
-if (!category) {
+if (!category || posts.length === 0) {
 	return Astro.redirect('/');
 }
 ---
@@ -38,11 +74,11 @@ if (!category) {
 			{
 				posts.map((post) => (
 					<PostCard
-						title={post.title}
-						description={post.description}
-						href={`/blog/${post.slug}/`}
-						category={post.category}
-						publishedAt={post.publishedAt}
+						title={post.data.title}
+						description={post.data.description}
+						href={`/blog/${post.id}/`}
+						category={post.data.category}
+						publishedAt={post.data.pubDate.toISOString().slice(0, 10)}
 					/>
 				))
 			}

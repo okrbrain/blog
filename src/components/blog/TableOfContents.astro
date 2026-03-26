@@ -1,8 +1,6 @@
 ---
-import type { TocItem } from './mockData';
-
 interface Props {
-	items: TocItem[];
+	items: Array<{ id: string; label: string }>;
 }
 
 const { items } = Astro.props;

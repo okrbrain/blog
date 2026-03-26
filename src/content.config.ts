@@ -14,6 +14,21 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			author: z.string().default('OKR Brain'),
+			intro: z.string(),
+			category: z.string(),
+			categorySlug: z.string(),
+			featured: z.boolean().default(false),
+			toc: z
+				.array(
+					z.object({
+						id: z.string(),
+						label: z.string(),
+					}),
+				)
+				.default([]),
+			practicalApplication: z.array(z.string()).default([]),
+			productConnection: z.array(z.string()).default([]),
+			relatedSlugs: z.array(z.string()).default([]),
 			tags: z.array(z.string()).default([]),
 			draft: z.boolean().default(false),
 			heroImage: z.optional(image()),

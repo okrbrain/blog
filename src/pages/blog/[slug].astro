@@ -1,64 +1,62 @@
 ---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogLayout from '../../components/blog/BlogLayout.astro';
 import CTAFinal from '../../components/blog/CTAFinal.astro';
 import CTAInline from '../../components/blog/CTAInline.astro';
 import PostCard from '../../components/blog/PostCard.astro';
 import TableOfContents from '../../components/blog/TableOfContents.astro';
-import { blogPosts, getPostBySlug } from '../../components/blog/mockData';
 
 export async function getStaticPaths() {
-	return blogPosts.map((post) => ({
-		params: { slug: post.slug },
+	const posts = await getCollection('blog', ({ data }) => (import.meta.env.PROD ? data.draft !== true : true));
+	return posts.map((post) => ({
+		params: { slug: post.id },
 	}));
 }
 
 const { slug } = Astro.params;
-const post = getPostBySlug(slug ?? '');
+const allPosts = (
+	await getCollection('blog', ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const post = allPosts.find((entry) => entry.id === slug);
 
 if (!post) {
 	return Astro.redirect('/');
 }
 
-const relatedPosts = blogPosts.filter((candidate) => post.relatedSlugs.includes(candidate.slug));
+const relatedPosts = allPosts.filter((candidate) => post.data.relatedSlugs.includes(candidate.id));
+const { Content } = await render(post as CollectionEntry<'blog'>);
 ---
 
 <BlogLayout
-	title={`${post.title} | OKR Brain`}
-	description={post.description}
+	title={`${post.data.title} | OKR Brain`}
+	description={post.data.description}
 	ogType="article"
 >
 	<article>
 		<header class="post-hero">
-			<p class="meta">{post.category} - {post.publishedAt}</p>
-			<h1>{post.title}</h1>
-			<p>{post.intro}</p>
+			<p class="meta">{post.data.category} - {post.data.pubDate.toISOString().slice(0, 10)}</p>
+			<h1>{post.data.title}</h1>
+			<p>{post.data.intro}</p>
 		</header>
 
-		<TableOfContents items={post.toc} />
+		<TableOfContents items={post.data.toc} />
 
 		<section class="section-card" aria-labelledby="conteudo-principal">
 			<h2 id="conteudo-principal">Conteudo principal</h2>
-			{
-				post.sections.map((section) => (
-					<section id={section.id}>
-						<h3>{section.title}</h3>
-						{section.content.map((paragraph) => <p>{paragraph}</p>)}
-					</section>
-				))
-			}
-			<!-- Placeholder: conteudo principal sera renderizado de Markdown no futuro -->
+			<Content />
 		</section>
 
 		<section class="section-card" aria-labelledby="aplicacao-pratica">
 			<h2 id="aplicacao-pratica">Aplicacao pratica</h2>
 			<ul>
-				{post.practicalApplication.map((item) => <li>{item}</li>)}
+				{post.data.practicalApplication.map((item) => <li>{item}</li>)}
 			</ul>
 		</section>
 
 		<section class="section-card" aria-labelledby="conexao-produto">
 			<h2 id="conexao-produto">Conexao com o produto</h2>
-			{post.productConnection.map((item) => <p>{item}</p>)}
+			{post.data.productConnection.map((item) => <p>{item}</p>)}
 		</section>
 
 		<CTAInline />
@@ -70,11 +68,11 @@ const relatedPosts = blogPosts.filter((candidate) => post.relatedSlugs.includes(
 				{
 					relatedPosts.map((relatedPost) => (
 						<PostCard
-							title={relatedPost.title}
-							description={relatedPost.description}
-							href={`/blog/${relatedPost.slug}/`}
-							category={relatedPost.category}
-							publishedAt={relatedPost.publishedAt}
+							title={relatedPost.data.title}
+							description={relatedPost.data.description}
+							href={`/blog/${relatedPost.id}/`}
+							category={relatedPost.data.category}
+							publishedAt={relatedPost.data.pubDate.toISOString().slice(0, 10)}
 						/>
 					))
 				}

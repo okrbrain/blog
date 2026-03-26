@@ -2,10 +2,61 @@
 import BlogLayout from '../components/blog/BlogLayout.astro';
 import CTAFinal from '../components/blog/CTAFinal.astro';
 import PostCard from '../components/blog/PostCard.astro';
+import { getCollection } from 'astro:content';
 import { SITE_TITLE } from '../consts';
-import { getLatestPosts, popularSearches, primaryCategories } from '../components/blog/mockData';
 
-const latestPosts = getLatestPosts(6);
+const posts = (
+	await getCollection('blog', ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const latestPosts = posts.slice(0, 6);
+
+const categoryInfo: Record<string, { name: string; description: string }> = {
+	'exemplos-de-okrs': {
+		name: 'Exemplos de OKRs',
+		description: 'Modelos prontos para diferentes contextos de negocio.',
+	},
+	'dores-e-dificuldades': {
+		name: 'Dores e dificuldades',
+		description: 'Principais gargalos ao implementar OKRs.',
+	},
+	'beneficios-de-okr': {
+		name: 'Beneficios de OKR',
+		description: 'Impacto real de OKRs na performance dos times.',
+	},
+	'estudos-de-caso': {
+		name: 'Estudos de caso',
+		description: 'Licoes aplicadas por equipes orientadas a metas.',
+	},
+	'comparacao-de-ferramentas': {
+		name: 'Comparacao de ferramentas',
+		description: 'Analises para escolher a ferramenta certa.',
+	},
+};
+
+const categoryOrder = [
+	'exemplos-de-okrs',
+	'dores-e-dificuldades',
+	'beneficios-de-okr',
+	'estudos-de-caso',
+	'comparacao-de-ferramentas',
+];
+
+const primaryCategories = categoryOrder
+	.filter((slug) => posts.some((post) => post.data.categorySlug === slug))
+	.map((slug) => ({
+		slug,
+		name: categoryInfo[slug]?.name ?? slug,
+		description: categoryInfo[slug]?.description ?? 'Conteudos da categoria.',
+	}));
+
+const popularSearches = [
+	'okr exemplos prontos',
+	'como criar key results',
+	'okr para time de produto',
+	'metodologia okr para startups',
+	'ferramenta de okr com ia',
+];
 ---
 
 <BlogLayout
@@ -25,11 +76,11 @@ const latestPosts = getLatestPosts(6);
 			{
 				latestPosts.map((post) => (
 					<PostCard
-						title={post.title}
-						description={post.description}
-						href={`/blog/${post.slug}/`}
-						category={post.category}
-						publishedAt={post.publishedAt}
+						title={post.data.title}
+						description={post.data.description}
+						href={`/blog/${post.id}/`}
+						category={post.data.category}
+						publishedAt={post.data.pubDate.toISOString().slice(0, 10)}
 					/>
 				))
 			}
