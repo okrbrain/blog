@@ -1,46 +1,29 @@
 ---
 import BlogLayout from '../components/blog/BlogLayout.astro';
-import CTAInline from '../components/blog/CTAInline.astro';
+import CTAFinal from '../components/blog/CTAFinal.astro';
 import PostCard from '../components/blog/PostCard.astro';
 import { SITE_TITLE } from '../consts';
-import { getFeaturedPosts, primaryCategories } from '../components/blog/mockData';
+import { getLatestPosts, popularSearches, primaryCategories } from '../components/blog/mockData';
 
-const featuredPosts = getFeaturedPosts();
+const latestPosts = getLatestPosts(6);
 ---
 
 <BlogLayout
-	title={`${SITE_TITLE} | Conteudo para crescimento com OKRs`}
-	description="Blog da OKR Brain com conteudos para gerar demanda organica: exemplos, dores, beneficios e comparativos de OKR."
+	title={`${SITE_TITLE} | Conteudo sobre OKRs`}
+	description="Conteudo pratico sobre OKRs para escala, consistencia e conversao."
 >
 	<section class="hero">
-		<p class="eyebrow">OKR Brain Blog</p>
-		<h1>O OKR Brain Blog esta voltando: mais simples, mais inteligente</h1>
-		<p>
-			Conteudo estrategico para escalar aquisicao organica com foco em IA para criar OKRs, simplicidade radical
-			e execucao real.
+		<h1>OKR Brain</h1>
+		<p class="hero-subtitle">
+			Conteudo direto para criar OKRs melhores, executar com cadencia e conectar estrategia a resultado.
 		</p>
-		<a class="button-primary" href="#">Quero acesso antecipado</a>
 	</section>
 
-	<section class="section-card" aria-labelledby="categorias">
-		<h2 id="categorias">Categorias prioritarias</h2>
+	<section class="section-card" aria-labelledby="ultimas-postagens">
+		<h2 id="ultimas-postagens">Ultimas postagens</h2>
 		<div class="grid">
 			{
-				primaryCategories.map((category) => (
-					<a class="category-card" href={`/categoria/${category.slug}/`}>
-						<h3>{category.name}</h3>
-						<p>{category.description}</p>
-					</a>
-				))
-			}
-		</div>
-	</section>
-
-	<section class="section-card" aria-labelledby="destaques">
-		<h2 id="destaques">Posts em destaque</h2>
-		<div class="grid">
-			{
-				featuredPosts.map((post) => (
+				latestPosts.map((post) => (
 					<PostCard
 						title={post.title}
 						description={post.description}
@@ -53,16 +36,60 @@ const featuredPosts = getFeaturedPosts();
 		</div>
 	</section>
 
-	<CTAInline />
+	<section class="section-card" aria-labelledby="categorias">
+		<h2 id="categorias">Principais categorias</h2>
+		<div class="grid">
+			{
+				primaryCategories.map((category) => (
+					<a class="category-card" href={`/categoria/${category.slug}/`}>
+						<h3>{category.name}</h3>
+						<p>{category.description}</p>
+					</a>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="section-card" aria-labelledby="buscas-realizadas">
+		<h2 id="buscas-realizadas">Buscas mais realizadas</h2>
+		<ul class="search-list">
+			{
+				popularSearches.map((query) => (
+					<li>
+						<a href={`/blog/?q=${encodeURIComponent(query)}`}>{query}</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<CTAFinal />
 </BlogLayout>
 
 <style>
 	.hero {
-		padding: 1.9rem;
-		border-radius: var(--radius-lg);
-		background: linear-gradient(140deg, #ffffff 0%, #f0fff6 65%, #e0ffeb 100%);
-		border: 1px solid rgb(var(--gray-light));
-		box-shadow: 0 8px 18px rgba(11, 24, 16, 0.08);
+		padding: 0.4rem 0 0;
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+		text-align: left;
+		margin-bottom: 1rem;
+		max-width: 620px;
+	}
+	.hero h1 {
+		font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+		font-weight: 700;
+		line-height: 1.25;
+		letter-spacing: normal;
+		text-transform: none;
+		font-style: normal;
+		color: rgb(var(--black));
+		margin-bottom: 0.35rem;
+	}
+	.hero-subtitle {
+		font-size: 0.96rem;
+		color: rgb(var(--gray-dark));
+		margin: 0;
 	}
 	.grid {
 		display: grid;
@@ -89,5 +116,25 @@ const featuredPosts = getFeaturedPosts();
 	}
 	.category-card p {
 		margin: 0;
+	}
+	.search-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 0.75rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.search-list a {
+		display: block;
+		text-decoration: none;
+		background: #fff;
+		border: 1px solid rgb(var(--gray-light));
+		padding: 0.8rem;
+		border-radius: var(--radius-sm);
+		color: rgb(var(--gray-dark));
+	}
+	.search-list a:hover {
+		border-color: #5efc8d;
 	}
 </style>

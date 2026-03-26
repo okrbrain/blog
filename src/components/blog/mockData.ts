@@ -203,10 +203,92 @@ export const blogPosts: BlogPost[] = [
 		],
 		relatedSlugs: ['exemplos-de-okrs-para-times-de-produto'],
 	},
+	{
+		slug: 'estudo-de-caso-okr-em-saas-b2b',
+		title: 'Estudo de caso: OKR em SaaS B2B',
+		description: 'Como uma equipe reduziu churn usando metas orientadas a resultado.',
+		intro: 'Um caso pratico de uso de OKR para alinhar produto, marketing e CS em torno de retencao.',
+		category: 'Estudos de caso',
+		categorySlug: 'estudos-de-caso',
+		publishedAt: '2026-03-12',
+		toc: [
+			{ id: 'cenario', label: 'Cenario inicial' },
+			{ id: 'okrs', label: 'OKRs definidos' },
+			{ id: 'resultado', label: 'Resultados obtidos' },
+		],
+		sections: [
+			{ id: 'cenario', title: 'Cenario inicial', content: ['A empresa crescia em novos clientes, mas perdia receita na base existente.'] },
+			{ id: 'okrs', title: 'OKRs definidos', content: ['Objetivo: aumentar retencao liquida. KRs conectados a ativacao e adoção de features-chave.'] },
+			{ id: 'resultado', title: 'Resultados obtidos', content: ['Em 90 dias, houve melhora de retencao e previsibilidade do ciclo de renovacao.'] },
+		],
+		practicalApplication: ['Mapeie metricas de base.', 'Defina KRs por alavanca de retencao.', 'Revise progresso semanalmente.'],
+		productConnection: ['Com o OKR Brain, voce acompanha a execucao de KRs com mais clareza.'],
+		relatedSlugs: ['beneficios-de-okr-para-alinhamento'],
+	},
+	{
+		slug: 'comparativo-ferramentas-okr-2026',
+		title: 'Comparativo de ferramentas de OKR em 2026',
+		description: 'Criterios para escolher uma plataforma simples e escalavel.',
+		intro: 'Nem toda ferramenta de OKR atende equipes em crescimento. Este comparativo foca no que importa.',
+		category: 'Comparacao de ferramentas',
+		categorySlug: 'comparacao-de-ferramentas',
+		publishedAt: '2026-03-10',
+		toc: [
+			{ id: 'criterios', label: 'Criterios de escolha' },
+			{ id: 'tradeoffs', label: 'Trade-offs comuns' },
+			{ id: 'decisao', label: 'Checklist final' },
+		],
+		sections: [
+			{ id: 'criterios', title: 'Criterios de escolha', content: ['Priorize usabilidade, cadencia de acompanhamento e visibilidade das metas.'] },
+			{ id: 'tradeoffs', title: 'Trade-offs comuns', content: ['Solucoes muito complexas tendem a reduzir adesao no dia a dia dos times.'] },
+			{ id: 'decisao', title: 'Checklist final', content: ['Valide onboarding, integracoes essenciais e curva de aprendizado.'] },
+		],
+		practicalApplication: ['Defina requisitos nao negociaveis.', 'Teste com um squad piloto.', 'Meça adesao no primeiro ciclo.'],
+		productConnection: ['O OKR Brain foi desenhado para simplicidade e execucao, sem sobrecarga operacional.'],
+		relatedSlugs: ['erros-comuns-na-implementacao-de-okrs'],
+	},
+	{
+		slug: 'dores-de-okr-em-times-remotos',
+		title: 'Principais dores de OKR em times remotos',
+		description: 'Os desafios de alinhamento em times distribuidos e como resolver.',
+		intro: 'Times remotos sofrem com desalinhamento silencioso. OKRs bem definidos ajudam a reduzir esse risco.',
+		category: 'Dores e dificuldades',
+		categorySlug: 'dores-e-dificuldades',
+		publishedAt: '2026-03-08',
+		toc: [
+			{ id: 'sintomas', label: 'Sintomas de desalinhamento' },
+			{ id: 'causas', label: 'Causas raiz' },
+			{ id: 'praticas', label: 'Praticas recomendadas' },
+		],
+		sections: [
+			{ id: 'sintomas', title: 'Sintomas de desalinhamento', content: ['KRs sem progresso claro e excesso de reunioes sem decisao.'] },
+			{ id: 'causas', title: 'Causas raiz', content: ['Falta de visibilidade compartilhada e objetivos mal definidos por area.'] },
+			{ id: 'praticas', title: 'Praticas recomendadas', content: ['Criar rituais curtos e dashboards unificados por ciclo.'] },
+		],
+		practicalApplication: ['Reduza objetivos por trimestre.', 'Padronize check-ins assicronos.', 'Defina ownership explicito por KR.'],
+		productConnection: ['No OKR Brain, todos os KRs ficam visiveis para o time inteiro em um unico fluxo.'],
+		relatedSlugs: ['erros-comuns-na-implementacao-de-okrs'],
+	},
+];
+
+// Mock local para a secao "buscas mais realizadas".
+// Futuro: trocar por fonte real (GSC/GA4/API) sem alterar a interface da Home.
+export const popularSearches = [
+	'okr exemplos prontos',
+	'como criar key results',
+	'okr para time de produto',
+	'metodologia okr para startups',
+	'ferramenta de okr com ia',
 ];
 
 export function getFeaturedPosts() {
 	return blogPosts.filter((post) => post.featured);
+}
+
+export function getLatestPosts(limit = 6) {
+	return [...blogPosts]
+		.sort((a, b) => new Date(b.publishedAt).valueOf() - new Date(a.publishedAt).valueOf())
+		.slice(0, limit);
 }
 
 export function getCategoryBySlug(slug: string) {
