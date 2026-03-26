@@ -1,0 +1,41 @@
+---
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<section class="category-hero">
+	<p class="eyebrow">Categoria</p>
+	<h1>{title}</h1>
+	<p>{description}</p>
+</section>
+
+<style>
+	.category-hero {
+		padding: 1.6rem;
+		border-radius: var(--radius-lg);
+		background: linear-gradient(138deg, #ffffff 0%, #ecfff4 70%, #dfffe9 100%);
+		border: 1px solid rgb(var(--gray-light));
+		margin-bottom: 1.7rem;
+		box-shadow: 0 4px 14px rgba(11, 24, 16, 0.06);
+	}
+	.eyebrow {
+		margin: 0 0 0.4rem 0;
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		color: #188142;
+		letter-spacing: 0.08em;
+		font-weight: 700;
+	}
+	h1 {
+		font-size: clamp(1.8rem, 3vw, 2.4rem);
+		margin-bottom: 0.45rem;
+	}
+	p {
+		max-width: 70ch;
+		margin: 0;
+	}
+</style>

@@ -1,0 +1,50 @@
+---
+import type { TocItem } from './mockData';
+
+interface Props {
+	items: TocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="toc" aria-label="Indice do artigo">
+	<h2>Indice do artigo</h2>
+	<ol>
+		{
+			items.map((item) => (
+				<li>
+					<a href={`#${item.id}`}>{item.label}</a>
+				</li>
+			))
+		}
+	</ol>
+</nav>
+
+<style>
+	.toc {
+		margin: 1.5rem 0;
+		padding: 1.15rem;
+		border: 1px solid rgba(53, 219, 109, 0.24);
+		border-radius: var(--radius-md);
+		background: linear-gradient(145deg, #ffffff 0%, #f0fff6 100%);
+	}
+	h2 {
+		font-size: 1.05rem;
+		margin-bottom: 0.4rem;
+	}
+	ol {
+		margin: 0;
+		padding-left: 1.2rem;
+	}
+	li + li {
+		margin-top: 0.3rem;
+	}
+	a {
+		text-decoration: none;
+		color: rgb(var(--gray-dark));
+	}
+	a:hover {
+		color: #1f9e52;
+	}
+</style>

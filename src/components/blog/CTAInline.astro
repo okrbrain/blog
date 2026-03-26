@@ -1,0 +1,37 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+	href?: string;
+}
+
+const {
+	title = 'Crie OKRs com IA em minutos',
+	description = 'Transforme metas soltas em um plano de execucao claro e mensuravel com o OKR Brain.',
+	href = '#',
+} = Astro.props;
+---
+
+<aside class="cta-inline" aria-label="Call to action">
+	<p class="eyebrow">Potencializado por Inteligencia Artificial</p>
+	<h3>{title}</h3>
+	<p>{description}</p>
+	<a class="button-primary" href={href}>Conhecer o OKR Brain</a>
+</aside>
+
+<style>
+	.cta-inline {
+		margin: 2rem 0;
+		padding: 1.25rem;
+		border: 1px solid rgba(53, 219, 109, 0.35);
+		background: linear-gradient(140deg, #ffffff 0%, #effff4 75%, #e5ffef 100%);
+		border-radius: var(--radius-md);
+	}
+	h3 {
+		font-size: 1.2rem;
+		margin: 0 0 0.4rem;
+	}
+	p {
+		margin: 0 0 0.8rem;
+	}
+</style>

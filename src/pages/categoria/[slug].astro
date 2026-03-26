@@ -1,0 +1,61 @@
+---
+import BlogLayout from '../../components/blog/BlogLayout.astro';
+import CategoryHero from '../../components/blog/CategoryHero.astro';
+import CTAInline from '../../components/blog/CTAInline.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import { getCategoryBySlug, getPostsByCategory, primaryCategories } from '../../components/blog/mockData';
+
+export async function getStaticPaths() {
+	return primaryCategories.map((category) => ({
+		params: { slug: category.slug },
+	}));
+}
+
+const { slug } = Astro.params;
+const category = getCategoryBySlug(slug ?? '');
+const posts = getPostsByCategory(slug ?? '');
+
+if (!category) {
+	return Astro.redirect('/');
+}
+---
+
+<BlogLayout
+	title={`${category.name} | OKR Brain Blog`}
+	description={category.seoIntro}
+>
+	<CategoryHero title={category.name} description={category.description} />
+
+	<section class="section-card">
+		<h2>Introducao</h2>
+		<p>{category.seoIntro}</p>
+		<!-- Placeholder: inserir introducao vinda de Markdown da categoria no futuro -->
+	</section>
+
+	<section aria-labelledby="artigos-da-categoria">
+		<h2 id="artigos-da-categoria">Artigos da categoria</h2>
+		<div class="post-list">
+			{
+				posts.map((post) => (
+					<PostCard
+						title={post.title}
+						description={post.description}
+						href={`/blog/${post.slug}/`}
+						category={post.category}
+						publishedAt={post.publishedAt}
+					/>
+				))
+			}
+		</div>
+	</section>
+
+	<CTAInline />
+</BlogLayout>
+
+<style>
+	.post-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.1rem;
+	}
+</style>

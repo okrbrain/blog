@@ -13,6 +13,9 @@ const blog = defineCollection({
 			// Transform string to Date object
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
+			author: z.string().default('OKR Brain'),
+			tags: z.array(z.string()).default([]),
+			draft: z.boolean().default(false),
 			heroImage: z.optional(image()),
 		}),
 });

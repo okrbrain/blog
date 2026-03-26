@@ -1,0 +1,46 @@
+---
+import BaseHead from '../BaseHead.astro';
+import Footer from '../Footer.astro';
+import Header from '../Header.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	ogType?: 'website' | 'article';
+}
+
+const { title, description, ogType = 'website' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<BaseHead title={title} description={description} />
+		<meta property="og:type" content={ogType} />
+		<!-- Placeholder para JSON-LD de Article (futuro via Markdown automation) -->
+	</head>
+	<body>
+		<Header />
+		<main class="blog-main">
+			<div class="blog-shell">
+				<slot />
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.blog-main {
+		padding-top: 2.2rem;
+	}
+	.blog-shell {
+		max-width: 1024px;
+		margin: 0 auto;
+	}
+	@media (max-width: 720px) {
+		.blog-main {
+			padding-top: 1.2rem;
+		}
+	}
+</style>

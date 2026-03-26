@@ -1,0 +1,106 @@
+---
+import BlogLayout from '../../components/blog/BlogLayout.astro';
+import CTAFinal from '../../components/blog/CTAFinal.astro';
+import CTAInline from '../../components/blog/CTAInline.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import TableOfContents from '../../components/blog/TableOfContents.astro';
+import { blogPosts, getPostBySlug } from '../../components/blog/mockData';
+
+export async function getStaticPaths() {
+	return blogPosts.map((post) => ({
+		params: { slug: post.slug },
+	}));
+}
+
+const { slug } = Astro.params;
+const post = getPostBySlug(slug ?? '');
+
+if (!post) {
+	return Astro.redirect('/');
+}
+
+const relatedPosts = blogPosts.filter((candidate) => post.relatedSlugs.includes(candidate.slug));
+---
+
+<BlogLayout
+	title={`${post.title} | OKR Brain Blog`}
+	description={post.description}
+	ogType="article"
+>
+	<article>
+		<header class="post-hero">
+			<p class="meta">{post.category} - {post.publishedAt}</p>
+			<h1>{post.title}</h1>
+			<p>{post.intro}</p>
+		</header>
+
+		<TableOfContents items={post.toc} />
+
+		<section class="section-card" aria-labelledby="conteudo-principal">
+			<h2 id="conteudo-principal">Conteudo principal</h2>
+			{
+				post.sections.map((section) => (
+					<section id={section.id}>
+						<h3>{section.title}</h3>
+						{section.content.map((paragraph) => <p>{paragraph}</p>)}
+					</section>
+				))
+			}
+			<!-- Placeholder: conteudo principal sera renderizado de Markdown no futuro -->
+		</section>
+
+		<section class="section-card" aria-labelledby="aplicacao-pratica">
+			<h2 id="aplicacao-pratica">Aplicacao pratica</h2>
+			<ul>
+				{post.practicalApplication.map((item) => <li>{item}</li>)}
+			</ul>
+		</section>
+
+		<section class="section-card" aria-labelledby="conexao-produto">
+			<h2 id="conexao-produto">Conexao com o produto</h2>
+			{post.productConnection.map((item) => <p>{item}</p>)}
+		</section>
+
+		<CTAInline />
+		<CTAFinal />
+
+		<section class="section-card" aria-labelledby="links-relacionados">
+			<h2 id="links-relacionados">Leituras relacionadas</h2>
+			<div class="related-grid">
+				{
+					relatedPosts.map((relatedPost) => (
+						<PostCard
+							title={relatedPost.title}
+							description={relatedPost.description}
+							href={`/blog/${relatedPost.slug}/`}
+							category={relatedPost.category}
+							publishedAt={relatedPost.publishedAt}
+						/>
+					))
+				}
+			</div>
+		</section>
+	</article>
+</BlogLayout>
+
+<style>
+	.post-hero {
+		padding: 1.7rem;
+		border-radius: var(--radius-lg);
+		background: linear-gradient(140deg, #ffffff 0%, #effff4 70%, #dfffe9 100%);
+		border: 1px solid rgb(var(--gray-light));
+		box-shadow: 0 8px 18px rgba(11, 24, 16, 0.07);
+	}
+	.meta {
+		margin: 0;
+		font-size: 0.82rem;
+		color: rgb(var(--gray));
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+	.related-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.1rem;
+	}
+</style>
